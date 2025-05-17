@@ -11,10 +11,12 @@ import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.chart.axis.NumberAxis;
 
 public class Main {
 
     private static final Map<String, Long[]> summaryMap = new LinkedHashMap<>();
+    private static final int NUM_SEARCHES = 1000;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -36,12 +38,12 @@ public class Main {
             choice = scanner.nextInt();
 
             switch (choice) {
-                case 1 -> testListPerformance(new ArrayList<>(), "ArrayList", size, scanner);
-                case 2 -> testListPerformance(new LinkedList<>(), "LinkedList", size, scanner);
-                case 3 -> testSetPerformance(new HashSet<>(), "HashSet", size, scanner);
-                case 4 -> testSetPerformance(new TreeSet<>(), "TreeSet", size, scanner);
-                case 5 -> testStackPerformance(new Stack<>(), "Stack", size, scanner);
-                case 6 -> testQueuePerformance(new LinkedList<>(), "Queue", size, scanner);
+                case 1 -> testListPerformance(new ArrayList<>(), "ArrayList", size);
+                case 2 -> testListPerformance(new LinkedList<>(), "LinkedList", size);
+                case 3 -> testSetPerformance(new HashSet<>(), "HashSet", size);
+                case 4 -> testSetPerformance(new TreeSet<>(), "TreeSet", size);
+                case 5 -> testStackPerformance(new Stack<>(), "Stack", size);
+                case 6 -> testQueuePerformance(new LinkedList<>(), "Queue", size);
                 case 7 -> {
                     showSummary();
                     showChartFromSummary();
@@ -53,86 +55,82 @@ public class Main {
         scanner.close();
     }
 
-    public static void testListPerformance(List<Integer> list, String name, int size, Scanner scanner) {
+    public static void testListPerformance(List<Integer> list, String name, int size) {
         System.out.println("\n>> Testing " + name);
-        long startAdd = System.currentTimeMillis();
+        long startAdd = System.nanoTime();
         for (int i = 0; i < size; i++) list.add(i);
-        long endAdd = System.currentTimeMillis();
-        long addTime = endAdd - startAdd;
+        long endAdd = System.nanoTime();
+        long addTime = (endAdd - startAdd) / 1_000_000;
         System.out.println("✅ Added " + size + " elements in " + addTime + " ms");
 
-        System.out.println("Enter 3 values to search:");
-        long startSearch = System.currentTimeMillis();
-        for (int i = 0; i < 3; i++) {
-            int val = scanner.nextInt();
-            System.out.println("🔍 " + val + ": " + (list.contains(val) ? "Found" : "Not Found"));
+        Random rand = new Random();
+        long startSearch = System.nanoTime();
+        for (int i = 0; i < NUM_SEARCHES; i++) {
+            list.contains(rand.nextInt(size));
         }
-        long endSearch = System.currentTimeMillis();
-        long searchTime = endSearch - startSearch;
-        System.out.println("⏱️ Search Time: " + searchTime + " ms");
+        long endSearch = System.nanoTime();
+        long searchTime = (endSearch - startSearch) / 1_000_000;
+        System.out.println("⏱️ Search Time for " + NUM_SEARCHES + " lookups: " + searchTime + " ms");
 
         summaryMap.put(name, new Long[]{addTime, searchTime});
     }
 
-    public static void testSetPerformance(Set<Integer> set, String name, int size, Scanner scanner) {
+    public static void testSetPerformance(Set<Integer> set, String name, int size) {
         System.out.println("\n>> Testing " + name);
-        long startAdd = System.currentTimeMillis();
+        long startAdd = System.nanoTime();
         for (int i = 0; i < size; i++) set.add(i);
-        long endAdd = System.currentTimeMillis();
-        long addTime = endAdd - startAdd;
+        long endAdd = System.nanoTime();
+        long addTime = (endAdd - startAdd) / 1_000_000;
         System.out.println("✅ Added " + size + " elements in " + addTime + " ms");
 
-        System.out.println("Enter 3 values to search:");
-        long startSearch = System.currentTimeMillis();
-        for (int i = 0; i < 3; i++) {
-            int val = scanner.nextInt();
-            System.out.println("🔍 " + val + ": " + (set.contains(val) ? "Found" : "Not Found"));
+        Random rand = new Random();
+        long startSearch = System.nanoTime();
+        for (int i = 0; i < NUM_SEARCHES; i++) {
+            set.contains(rand.nextInt(size));
         }
-        long endSearch = System.currentTimeMillis();
-        long searchTime = endSearch - startSearch;
-        System.out.println("⏱️ Search Time: " + searchTime + " ms");
+        long endSearch = System.nanoTime();
+        long searchTime = (endSearch - startSearch) / 1_000_000;
+        System.out.println("⏱️ Search Time for " + NUM_SEARCHES + " lookups: " + searchTime + " ms");
 
         summaryMap.put(name, new Long[]{addTime, searchTime});
     }
 
-    public static void testStackPerformance(Stack<Integer> stack, String name, int size, Scanner scanner) {
+    public static void testStackPerformance(Stack<Integer> stack, String name, int size) {
         System.out.println("\n>> Testing " + name);
-        long startAdd = System.currentTimeMillis();
+        long startAdd = System.nanoTime();
         for (int i = 0; i < size; i++) stack.push(i);
-        long endAdd = System.currentTimeMillis();
-        long addTime = endAdd - startAdd;
+        long endAdd = System.nanoTime();
+        long addTime = (endAdd - startAdd) / 1_000_000;
         System.out.println("✅ Pushed " + size + " elements in " + addTime + " ms");
 
-        System.out.println("Enter 3 values to search:");
-        long startSearch = System.currentTimeMillis();
-        for (int i = 0; i < 3; i++) {
-            int val = scanner.nextInt();
-            System.out.println("🔍 " + val + ": " + (stack.contains(val) ? "Found" : "Not Found"));
+        Random rand = new Random();
+        long startSearch = System.nanoTime();
+        for (int i = 0; i < NUM_SEARCHES; i++) {
+            stack.contains(rand.nextInt(size));
         }
-        long endSearch = System.currentTimeMillis();
-        long searchTime = endSearch - startSearch;
-        System.out.println("⏱️ Search Time: " + searchTime + " ms");
+        long endSearch = System.nanoTime();
+        long searchTime = (endSearch - startSearch) / 1_000_000;
+        System.out.println("⏱️ Search Time for " + NUM_SEARCHES + " lookups: " + searchTime + " ms");
 
         summaryMap.put(name, new Long[]{addTime, searchTime});
     }
 
-    public static void testQueuePerformance(Queue<Integer> queue, String name, int size, Scanner scanner) {
+    public static void testQueuePerformance(Queue<Integer> queue, String name, int size) {
         System.out.println("\n>> Testing " + name);
-        long startAdd = System.currentTimeMillis();
+        long startAdd = System.nanoTime();
         for (int i = 0; i < size; i++) queue.offer(i);
-        long endAdd = System.currentTimeMillis();
-        long addTime = endAdd - startAdd;
+        long endAdd = System.nanoTime();
+        long addTime = (endAdd - startAdd) / 1_000_000;
         System.out.println("✅ Offered " + size + " elements in " + addTime + " ms");
 
-        System.out.println("Enter 3 values to search:");
-        long startSearch = System.currentTimeMillis();
-        for (int i = 0; i < 3; i++) {
-            int val = scanner.nextInt();
-            System.out.println("🔍 " + val + ": " + (queue.contains(val) ? "Found" : "Not Found"));
+        Random rand = new Random();
+        long startSearch = System.nanoTime();
+        for (int i = 0; i < NUM_SEARCHES; i++) {
+            queue.contains(rand.nextInt(size));
         }
-        long endSearch = System.currentTimeMillis();
-        long searchTime = endSearch - startSearch;
-        System.out.println("⏱️ Search Time: " + searchTime + " ms");
+        long endSearch = System.nanoTime();
+        long searchTime = (endSearch - startSearch) / 1_000_000;
+        System.out.println("⏱️ Search Time for " + NUM_SEARCHES + " lookups: " + searchTime + " ms");
 
         summaryMap.put(name, new Long[]{addTime, searchTime});
     }
@@ -172,11 +170,13 @@ public class Main {
         }
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        long maxY = 10;
         for (Map.Entry<String, Long[]> entry : summaryMap.entrySet()) {
             String dsName = entry.getKey();
             Long[] times = entry.getValue();
             dataset.addValue(times[0], "Add Time", dsName);
             dataset.addValue(times[1], "Search Time", dsName);
+            maxY = Math.max(maxY, Math.max(times[0], times[1]));
         }
 
         JFreeChart barChart = ChartFactory.createBarChart(
@@ -186,18 +186,19 @@ public class Main {
                 dataset
         );
 
-        // Show labels on bars
         CategoryPlot plot = barChart.getCategoryPlot();
         BarRenderer renderer = (BarRenderer) plot.getRenderer();
         renderer.setDefaultItemLabelsVisible(true);
         renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
 
-        // Display chart
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setAutoRange(false);
+        rangeAxis.setRange(0.0, maxY + 10.0);
+
         ChartFrame frame = new ChartFrame("Add vs Search Time Chart", barChart);
         frame.pack();
         frame.setVisible(true);
 
-        // Save to PNG
         try {
             ChartUtils.saveChartAsPNG(new File("add_vs_search_chart.png"), barChart, 900, 600);
             System.out.println("📁 Chart saved as add_vs_search_chart.png");
